@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generator Script Konten Affiliate</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .spinner {
+            border-top-color: #3498db;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white flex items-center justify-center min-h-screen p-4">
+
+    <div class="w-full max-w-3xl mx-auto">
+        <div class="bg-gray-800 border border-gray-700 rounded-2xl shadow-2xl p-6 md:p-8">
+            <!-- Header -->
+            <div class="text-center mb-8">
+                <h1 class="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-teal-300">Generator Script Konten Affiliate</h1>
+                <p class="text-gray-400 mt-2">Buat skrip konten yang menarik dan menjual dari link produk secara otomatis.</p>
+            </div>
+
+            <!-- Form Input -->
+            <div class="space-y-6">
+                <div>
+                    <label for="product-link" class="block text-sm font-medium text-gray-300 mb-2">Link Produk Affiliate</label>
+                    <input type="url" id="product-link" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200" placeholder="https://www.tokopedia.com/contoh/produk-keren">
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label for="result-count" class="block text-sm font-medium text-gray-300 mb-2">Jumlah Hasil</label>
+                        <select id="result-count" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200">
+                            <option value="1">1 Opsi</option>
+                            <option value="2" selected>2 Opsi</option>
+                            <option value="3">3 Opsi</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="language-style" class="block text-sm font-medium text-gray-300 mb-2">Gaya Bahasa</label>
+                        <select id="language-style" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200">
+                            <option value="Persuasif & Menjual">Persuasif & Menjual</option>
+                            <option value="Informatif & Detail">Informatif & Detail</option>
+                            <option value="Santai & Ramah">Santai & Ramah</option>
+                            <option value="Profesional & Formal">Profesional & Formal</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="content-length" class="block text-sm font-medium text-gray-300 mb-2">Panjang Tulisan</label>
+                        <select id="content-length" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200">
+                            <option value="Pendek (1-2 paragraf)">Pendek</option>
+                            <option value="Sedang (3-4 paragraf)" selected>Sedang</option>
+                            <option value="Panjang (5+ paragraf)">Panjang</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <button id="generate-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300 ease-in-out transform hover:scale-105 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><path d="M12 2a10 10 0 1 0 10 10c0-4.42-3.58-8-8-8Z"/><path d="m15.5 8.5-3 3-3-3"/><path d="M12 15.5V12"/></svg>
+                        Generate Konten
+                    </button>
+                </div>
+            </div>
+
+            <!-- Output Section -->
+            <div id="output-section" class="mt-8">
+                <div id="loading-indicator" class="hidden flex flex-col items-center justify-center text-center text-gray-400">
+                    <div class="spinner w-12 h-12 rounded-full border-4 border-gray-700 border-t-blue-500 mb-4"></div>
+                    <p>AI sedang meracik kata-kata terbaik untukmu... Mohon tunggu sebentar.</p>
+                </div>
+                <div id="results-container" class="space-y-4"></div>
+                <div id="error-message" class="hidden text-center text-red-400 bg-red-900/50 p-4 rounded-lg"></div>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div id="action-buttons" class="mt-6 flex justify-end hidden">
+                 <button id="export-word-btn" class="bg-teal-600 hover:bg-teal-700 text-white font-semibold py-2 px-5 rounded-lg transition duration-300 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><path d="M12 18v-6"/><path d="M10 14l2 2 2-2"/><path d="M9 12H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v1h1a1 1 0 0 1 1 1v1h-1a1 1 0 0 1-1-1V7h-1v4h1a1 1 0 0 1 1 1Z"/></svg>
+                    Export ke Word
+                </button>
+            </div>
+        </div>
+        <footer class="text-center mt-6 text-gray-500 text-sm">
+            Ditenagai oleh Gemini 2.5 Flash
+        </footer>
+    </div>
+
+<script>
+    const generateBtn = document.getElementById('generate-btn');
+    const productLinkInput = document.getElementById('product-link');
+    const resultCountSelect = document.getElementById('result-count');
+    const languageStyleSelect = document.getElementById('language-style');
+    const contentLengthSelect = document.getElementById('content-length');
+    const loadingIndicator = document.getElementById('loading-indicator');
+    const resultsContainer = document.getElementById('results-container');
+    const errorMessage = document.getElementById('error-message');
+    const actionButtons = document.getElementById('action-buttons');
+    const exportWordBtn = document.getElementById('export-word-btn');
+
+    generateBtn.addEventListener('click', handleGeneration);
+
+    // Event delegation for copy buttons
+    resultsContainer.addEventListener('click', function(e) {
+        if (e.target && e.target.matches('.copy-btn')) {
+            const textToCopy = e.target.dataset.copytext;
+            copyToClipboard(textToCopy);
+            e.target.textContent = 'Tersalin!';
+            e.target.classList.remove('bg-gray-600', 'hover:bg-gray-500');
+            e.target.classList.add('bg-green-600');
+            setTimeout(() => {
+                e.target.textContent = 'Salin';
+                e.target.classList.remove('bg-green-600');
+                e.target.classList.add('bg-gray-600', 'hover:bg-gray-500');
+            }, 2000);
+        }
+    });
+
+    exportWordBtn.addEventListener('click', exportToWord);
+
+    async function handleGeneration() {
+        const productLink = productLinkInput.value.trim();
+        if (!productLink) {
+            showError('Harap masukkan link produk terlebih dahulu.');
+            return;
+        }
+        if (!isValidUrl(productLink)) {
+            showError('Format URL tidak valid. Harap periksa kembali link Anda.');
+            return;
+        }
+
+        clearOutput();
+        loadingIndicator.classList.remove('hidden');
+        generateBtn.disabled = true;
+        generateBtn.classList.add('opacity-50', 'cursor-not-allowed');
+
+        const resultCount = resultCountSelect.value;
+        const languageStyle = languageStyleSelect.value;
+        const contentLength = contentLengthSelect.value;
+
+        const systemPrompt = `Anda adalah seorang copywriter profesional spesialis affiliate marketing di Indonesia. Tugas Anda adalah membuat beberapa draf skrip konten yang sangat menarik dan persuasif berdasarkan link produk yang diberikan. Pastikan skrip mudah dipahami, menonjolkan manfaat utama produk, dan diakhiri dengan ajakan bertindak (Call to Action) yang kuat. Gunakan bahasa Indonesia yang natural dan sesuai target pasar.`;
+        const userQuery = `Tolong buatkan ${resultCount} opsi skrip konten affiliate untuk produk dari link ini: ${productLink}. 
+        Gunakan gaya bahasa: "${languageStyle}". 
+        Buat tulisan dengan panjang: "${contentLength}".
+        
+        Format output Anda harus jelas, pisahkan setiap opsi skrip dengan penanda unik seperti "--- OPSI [nomor] ---". Jangan tambahkan pengantar atau penutup apapun selain skrip itu sendiri.`;
+        
+        try {
+            const apiKey = ""; // API key will be injected in the execution environment
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+            const payload = {
+                contents: [{ parts: [{ text: userQuery }] }],
+                tools: [{ "google_search": {} }],
+                systemInstruction: {
+                    parts: [{ text: systemPrompt }]
+                },
+            };
+
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error.message || `HTTP error! status: ${response.status}`);
+            }
+
+            const result = await response.json();
+            const candidate = result.candidates?.[0];
+
+            if (candidate && candidate.content?.parts?.[0]?.text) {
+                const generatedText = candidate.content.parts[0].text;
+                displayResults(generatedText);
+                actionButtons.classList.remove('hidden');
+            } else {
+                throw new Error("Tidak ada konten yang dihasilkan atau format respons tidak valid.");
+            }
+        } catch (error) {
+            console.error("Error during API call:", error);
+            showError(`Terjadi kesalahan saat membuat konten: ${error.message}. Silakan coba lagi.`);
+        } finally {
+            loadingIndicator.classList.add('hidden');
+            generateBtn.disabled = false;
+            generateBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+        }
+    }
+
+    function displayResults(text) {
+        const scripts = text.split(/--- OPSI \d+ ---/g).filter(s => s.trim() !== '');
+        
+        if (scripts.length === 0) {
+            // Fallback for when the model doesn't use the exact separator
+            resultsContainer.innerHTML += createResultCard(text, 1);
+        } else {
+             scripts.forEach((script, index) => {
+                resultsContainer.innerHTML += createResultCard(script.trim(), index + 1);
+            });
+        }
+    }
+
+    function createResultCard(scriptText, index) {
+        const formattedScript = scriptText.replace(/\n/g, '<br>');
+        return `
+            <div class="bg-gray-700/50 border border-gray-600 rounded-lg p-5 fade-in">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-semibold text-blue-300">Opsi Konten #${index}</h3>
+                    <button class="copy-btn bg-gray-600 hover:bg-gray-500 text-white font-semibold py-1 px-3 rounded-md text-sm transition duration-200" data-copytext="${scriptText}">Salin</button>
+                </div>
+                <div class="text-gray-300 prose prose-invert max-w-none script-content">${formattedScript}</div>
+            </div>
+        `;
+    }
+
+    function showError(message) {
+        errorMessage.textContent = message;
+        errorMessage.classList.remove('hidden');
+    }
+
+    function clearOutput() {
+        resultsContainer.innerHTML = '';
+        errorMessage.classList.add('hidden');
+        actionButtons.classList.add('hidden');
+    }
+
+    function isValidUrl(string) {
+        try {
+            new URL(string);
+            return true;
+        } catch (_) {
+            return false;
+        }
+    }
+
+    function copyToClipboard(text) {
+        const tempTextArea = document.createElement('textarea');
+        tempTextArea.value = text;
+        document.body.appendChild(tempTextArea);
+        tempTextArea.select();
+        try {
+            document.execCommand('copy');
+        } catch (err) {
+            console.error('Gagal menyalin teks: ', err);
+        }
+        document.body.removeChild(tempTextArea);
+    }
+    
+    function exportToWord() {
+        let content = '';
+        const results = document.querySelectorAll('.script-content');
+        results.forEach((result, index) => {
+            content += `<h1>Opsi Konten #${index + 1}</h1>`;
+            content += `<p>${result.innerHTML.replace(/<br\s*[\/]?>/gi, "</p><p>")}</p>`;
+            content += '<br><hr><br>';
+        });
+        
+        const header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' "+
+            "xmlns:w='urn:schemas-microsoft-com:office:word' "+
+            "xmlns='http://www.w3.org/TR/REC-html40'>"+
+            "<head><meta charset='utf-8'><title>Export HTML to Word Document</title></head><body>";
+        const footer = "</body></html>";
+        const sourceHTML = header + content + footer;
+
+        const source = 'data:application/vnd.ms-word;charset=utf-8,' + encodeURIComponent(sourceHTML);
+        const fileDownload = document.createElement("a");
+        document.body.appendChild(fileDownload);
+        fileDownload.href = source;
+        fileDownload.download = 'skrip-konten-affiliate.doc';
+        fileDownload.click();
+        document.body.removeChild(fileDownload);
+    }
+
+</script>
+
+</body>
+</html>
